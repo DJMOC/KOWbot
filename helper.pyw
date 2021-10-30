@@ -33,7 +33,7 @@ import re
 #creater easyocr reader database, called only once
 reader = easyocr.Reader(['en'], gpu = False,
                         model_storage_directory =
-                        'C:\\Git\\Library\\Python\\EasyOCR\\')
+                        '\\assets\\easyOCR\\')
 
 # Coords are 0..1, so it scale to window size
 class Coords:
