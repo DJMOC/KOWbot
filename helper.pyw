@@ -78,13 +78,13 @@ class Colors:
 	falcon_event_5    = (109,  63, 134)
 	
 	def isOn(test, off, on):
-		print('    requested color test' + str(test) + ' vs off' + str(off) + ' and on' + str(on))
+		#print('    requested color test' + str(test) + ' vs off' + str(off) + ' and on' + str(on))
 		eucOff = pow(test[0] - off[0], 2) + pow(test[1] - off[1], 2) + pow(test[2] - off[2], 2)
 		eucOn  = pow(test[0] - on[0],  2) + pow(test[1] - on[1],  2) + pow(test[2] -  on[2], 2)
 		
-		print('    euclidian distance from off is : ' + str(eucOff))
-		print('    euclidian distance from on  is : ' + str(eucOn))
-		print('    test color is probably : ' + str(eucOn < eucOff))
+		#print('    euclidian distance from off is : ' + str(eucOff))
+		#print('    euclidian distance from on  is : ' + str(eucOn))
+		#print('    test color is probably : ' + str(eucOn < eucOff))
 		
 		if eucOn < eucOff:
 			return True
@@ -93,64 +93,64 @@ class Colors:
 
 class Screen:
 	def saveImage(im, name):
-		print('    requesting image save with name : ' + name)
+		#print('    requesting image save with name : ' + name)
 		im.save(os.getcwd() + '\\' + name + '_' + str(int(time.time())) + '.png', 'PNG')
 	
 	def grabFullScreen():
-		print('    grab full screen')
+		#print('    grab full screen')
 		return ImageGrab.grab()
 	
 	def grabPartialScreen(box):
-		print('    grab screen between ' + str(box))
+		#print('    grab screen between ' + str(box))
 		return ImageGrab.grab(box)
 		
 	def screenToCoords(box, xy):
-		print('    mapping screen ' + str(xy) + ' to box ' + str(box))
+		#print('    mapping screen ' + str(xy) + ' to box ' + str(box))
 		_x = (xy[0] - box[0]) / (box[2] - box[0])
 		_y = (xy[1] - box[1]) / (box[3] - box[1])
-		print(f'    position will be ({_x:1.6f}, {_y:1.6f})')
+		#print(f'    position will be ({_x:1.6f}, {_y:1.6f})')
 		return (_x, _y)
 	
 	def coordsToScreen(box, xy):
-		print(f'    mapping ({xy[0]:1.6f}, {xy[1]:1.6f}) to screen box ' + str(box))
+		#print(f'    mapping ({xy[0]:1.6f}, {xy[1]:1.6f}) to screen box ' + str(box))
 		_x = (1.0 - xy[0]) * box[0] + xy[0] * box[2]
 		_y = (1.0 - xy[1]) * box[1] + xy[1] * box[3]
-		print(f'    position will be ({_x}, {_y})')
+		#print(f'    position will be ({_x}, {_y})')
 		return (int(_x + .5), int(_y + .5))
 	
 	def makeBox(top_left, bottom_right):
-		print('    makeBox from ' + str(top_left) + ' and ' + str(bottom_right))
+		#print('    makeBox from ' + str(top_left) + ' and ' + str(bottom_right))
 		return (top_left[0],     top_left[1], 
 				bottom_right[0], bottom_right[1])
 
 class Mouse:
 	def getMousePosition():
-		print('    requesting mouse position : ' + str(win32api.GetCursorPos()))
+		#print('    requesting mouse position : ' + str(win32api.GetCursorPos()))
 		return win32api.GetCursorPos()
 
 	def getRelativeMousePosition(box):
 		(x, y) = win32api.GetCursorPos()
-		print('    requesting mouse position within box ' + str(box) + ' : ' + 
-					str(Screen.screenToCoords(box, (x, y))))
+		#print('    requesting mouse position within box ' + str(box) + ' : ' + 
+		#			str(Screen.screenToCoords(box, (x, y))))
 		return Screen.screenToCoords(box, (x, y))
 	
 	def presseButtonLeft():
-		print('    pressing left button at ' + str(win32api.GetCursorPos()))
+		#print('    pressing left button at ' + str(win32api.GetCursorPos()))
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
 	
 	def releaseButtonLeft():
-		print('    relessing left button at ' + str(win32api.GetCursorPos()))
+		#print('    relessing left button at ' + str(win32api.GetCursorPos()))
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
     
 	def clickButtonLeft():
-		print('    single left button click at ' + str(win32api.GetCursorPos()))
+		#print('    single left button click at ' + str(win32api.GetCursorPos()))
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
 		time.sleep(.05)
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 	
 	def clickTo(xy):
 		xy = (int(xy[0]), int(xy[1]))
-		print('    moving cursor to ' + str(xy) + ' then left clicking')
+		#print('    moving cursor to ' + str(xy) + ' then left clicking')
 		win32api.SetCursorPos(xy)
 		time.sleep(.05)
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
@@ -159,13 +159,13 @@ class Mouse:
 	
 	def moveTo(xy):
 		xy = (int(xy[0]), int(xy[1]))
-		print('    moving cursor to ' + str(xy))
+		#print('    moving cursor to ' + str(xy))
 		win32api.SetCursorPos(xy)
 	
 	def dragTo(xy):
 		xy = (int(xy[0]), int(xy[1]))
 		cuPos = win32api.GetCursorPos()
-		print('    dragging cursor from ' +  str(cuPos) + ' to ' + str(xy))
+		#print('    dragging cursor from ' +  str(cuPos) + ' to ' + str(xy))
 		(dx, dy) = (xy[0] - cuPos[0], xy[1] - cuPos[1])
 		win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
 		time.sleep(.1)
@@ -181,66 +181,66 @@ class Vision:
 	def imageToCoords(box, xy):
 		_x = float(xy[0]) / float(box[2] - box[0])
 		_y = float(xy[1]) / float(box[3] - box[1])
-		print('    mapping ' + str(xy) + ' in image ' + str((0, 0, box[2] - box[0], box[3] - box[1])))
-		print(f'    result is ({_x:1.6f}, {_y:1.6f})')
+		#print('    mapping ' + str(xy) + ' in image ' + str((0, 0, box[2] - box[0], box[3] - box[1])))
+		#print(f'    result is ({_x:1.6f}, {_y:1.6f})')
 		return (_x, _y)
 	
 	def coordsToImage(box, xy):
 		_x = (1.0 - xy[0]) * box[0] + xy[0] * box[2] - box[0]
 		_y = (1.0 - xy[1]) * box[1] + xy[1] * box[3] - box[1]
-		print(f'    mapping ({xy[0]:1.6f}, {xy[1]:1.6f}) to image ' + str((0, 0, box[2] - box[0], box[3] - box[1])))
-		print('    result is ' + str((_x, _y)))
+		#print(f'    mapping ({xy[0]:1.6f}, {xy[1]:1.6f}) to image ' + str((0, 0, box[2] - box[0], box[3] - box[1])))
+		#print('    result is ' + str((_x, _y)))
 		return (int(_x + .5), int(_y + .5))
 	
 	def screenToImage(box, xy):
-		print('    mapping screen ' + str(xy) + ' to image ' + str((xy[0] - box[0], xy[1] - box[1])))
+		#print('    mapping screen ' + str(xy) + ' to image ' + str((xy[0] - box[0], xy[1] - box[1])))
 		return (xy[0] - box[0], xy[1] - box[1])
 	
 	def imageToScreen(box, xy):
-		print('    mapping image ' + str(xy) + 'to screen ' + str((xy[0] + box[0], xy[1] + box[1])))
+		#print('    mapping image ' + str(xy) + 'to screen ' + str((xy[0] + box[0], xy[1] + box[1])))
 		return (xy[0] + box[0], xy[1] + box[1])
 	
 	def getColor(im, xy):
-		print('    get pixel color at ' + str(xy) + ' : ' + str(im.getpixel(xy)))
+		#print('    get pixel color at ' + str(xy) + ' : ' + str(im.getpixel(xy)))
 		return im.getpixel(xy)
 	
 	def extractStrings(box):
 		im = ImageGrab.grab(box)
 		ret = reader.readtext(array(im))
-		print('    extracting strings from screen location : ' + str(box))
-		print('    ' + ', '.join([elem[1] for elem in ret]))
+		#print('    extracting strings from screen location : ' + str(box))
+		#print('    ' + ', '.join([elem[1] for elem in ret]))
 		return ret
 	
 	def findString(obj, st):
-		print('    finding "' + st + '" in ' + ', '.join([elem[1].lower() for elem in obj]))
+		#print('    finding "' + st + '" in ' + ', '.join([elem[1].lower() for elem in obj]))
 		for x in obj:
 			if len(re.findall(st, x[1].lower())) != 0:
 				box = (x[0][0][0], x[0][0][1], x[0][2][0], x[0][2][1]);
-				print('    ' + st + ' found at location ' + str(box))
+				#print('    ' + st + ' found at location ' + str(box))
 				return ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
 		
-		print('    ' + st + ' not found')
+		#print('    ' + st + ' not found')
 		return (0, 0)
 	
 	def findMarchTime(stringList):
-		print('    trying to find time from ' + str(stringList))
+		#print('    trying to find time from ' + str(stringList))
 		#in case of any error, return 3 minutes
 		if len(stringList) != 1:#should only have 1 string
-			print('    error : list as not 1 and only 1 strings')
+			#print('    error : list as not 1 and only 1 strings')
 			return 180
 		
 		st = re.sub('[oO0]', '0', stringList[0][1])
 		st = re.sub('[.,:;]', ':', st)
-		print('    reformat to : ' + st)
+		#print('    reformat to : ' + st)
 		textList = st.split(':')
 		
 		if len(textList) != 2:#should only be minutes and secondes
-			print('    error : splitting with ":" did not returned 2 strings')
+			#print('    error : splitting with ":" did not returned 2 strings')
 			return 180
 		
 		try:
-			print('    trying to convert ' + textList[0] + ' minutes and ' + textList[1] + ' secondes')
+			#print('    trying to convert ' + textList[0] + ' minutes and ' + textList[1] + ' secondes')
 			return 60 * int(textList[0]) + int(textList[1])
 		except:#time not recognized correctly
-			print('    error : ' + textList[0] + ' or ' + textList[1] + ' is not in the right format')
+			#print('    error : ' + textList[0] + ' or ' + textList[1] + ' is not in the right format')
 			return 180
