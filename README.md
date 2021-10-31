@@ -9,14 +9,14 @@ Working :
 	-return to Home/World screen when done
 
 # Install #
--Python 3.7              (tested with 3.7.4)
--pip install easyocr     (tested with 1.4.1)
--pip install keyboard    (tested with 0.13.5)
--pip install numpy       (tested with 1.21.3)
--pip install Pillow      (tested with 8.2.0)
--pip install pywin32     (tested with 302)
--pip install torch       (tested with 1.10.0)
--pip install torchvision (tested with 0.11.1)
+* Python 3.7              (tested with 3.7.4)
+* pip install easyocr     (tested with 1.4.1)
+* pip install keyboard    (tested with 0.13.5)
+* pip install numpy       (tested with 1.21.3)
+* pip install Pillow      (tested with 8.2.0)
+* pip install pywin32     (tested with 302)
+* pip install torch       (tested with 1.10.0)
+* pip install torchvision (tested with 0.11.1)
 
 # How to #
 
