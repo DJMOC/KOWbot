@@ -2,11 +2,11 @@
 
 KOWbot is currently in beta testing. Please report problems when found!
 Working : 
-	-scaling to any window size
-	-automaticaly find it Operation Falcon event is available
-	-automaticaly run Operation Falcon until there is no Fuel
-	-send the maximum number of scouts according to your HQ
-	-return to Home/World screen when done
+* scaling to any window size
+* automaticaly find it Operation Falcon event is available
+* automaticaly run Operation Falcon until there is no Fuel
+* send the maximum number of scouts according to your HQ
+* return to Home/World screen when done
 
 # Install #
 * Python 3.7              (tested with 3.7.4)
