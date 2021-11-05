@@ -9,7 +9,8 @@ Working :
 * return to Home/World screen when done
 
 # Install #
-* Python 3.7              (tested with 3.7.4)
+* Python 3.7 (https://www.python.org/downloads/release/python-370/)
+* please, use a virtual environment (https://mothergeo-py.readthedocs.io/en/latest/development/how-to/venv-win.html)
 * pip install -r requirements.txt
 
 # How to #
