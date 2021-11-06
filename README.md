@@ -17,12 +17,12 @@ Working :
 
 # How to #
 
-Open file app.py to run the bot.
-Select the appropriate window with the arrows left and right. 
-Once you found it press enter. You will be ask to enter your HQ level.
-Answer 'y' to add more instance or 'n' to execute the current setup.
-No other configuration is needed. 
-At any time you can press 
-	'ctrl+alt+p' to pause the bot
-	'ctrl+alt+x' to exit after the current task
-	'ctrl+alt+esc' to exit now
+Open file app.py to run the bot.<br>
+Select the appropriate window with the arrows left and right. <br>
+Once you found it press enter. You will be ask to enter your HQ level.<br>
+Answer 'y' to add more instance or 'n' to execute the current setup.<br>
+No other configuration is needed. <br>
+At any time you can press <br>
+	'ctrl+alt+p' to pause the bot<br>
+	'ctrl+alt+x' to exit after the current task<br>
+	'ctrl+alt+esc' to exit now<br>
