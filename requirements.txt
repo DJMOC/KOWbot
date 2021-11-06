@@ -1,9 +1,9 @@
-### should be all, if missing module need to submit issue on github
+colorama==0.4.4
 easyocr==1.4.1
 keyboard==0.13.5
 numpy==1.21.3
 Pillow==8.2.0
+PyGetWindow==0.0.9
 pywin32==302
 torch==1.10.0
 torchvision==0.11.1
-### end of file
