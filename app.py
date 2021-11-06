@@ -68,6 +68,10 @@ def main():
 	#setup instances
 	while True:
 		games.append(Game())
+		if games[-1].initialized == False:
+			print(Fore.RED + 'could not start instance, removing it')
+			games[-1].exit()
+			games.remove(games[-1])
 		cont = input('Would you like to add more instances (y/n)?')
 		if cont != 'y' or g_exitRequest == True:
 			break
