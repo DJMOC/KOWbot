@@ -23,90 +23,89 @@
 # OTHER DEALINGS IN THE SOFTWARE.                                 #
 ###################################################################
 
-from instance import Game
+from KOW import Game
 import keyboard, time, os
-from helper import Mouse, Screen
+import colorama
+from colorama import Fore, Back, Style
 
-autoFalcon  = []
+#using gloabal variables to pause and clean exit app
+g_pauseRequest = False
+g_exitRequest  = False
+
+def on_shortcutPause():
+	global g_pauseRequest
+	if g_pauseRequest == True:
+		g_pauseRequest = False
+		print(Fore.GREEN + 'Bot execution restating')
+	else:
+		g_pauseRequest = True
+		print(Fore.YELLOW + 'Bot execution pausing, please wait a few secondes to finish current task')
+
+def on_shortcutExit():
+	global g_exitRequest
+	g_exitRequest = True
+	print(Fore.YELLOW + 'Bot exit requested, please wait tasks to finish')
 
 def on_shortcutKill():
-	print('Kill Sequence Initiated')
+	print(Fore.RED + 'Kill Sequence Initiated')
+	colorama.deinit()
 	os._exit(0)
 
-def initKillSequence(ks):
-	print('To kill the app use"' + ks + '" key sequence')
-	keyboard.add_hotkey(ks, on_shortcutKill)
-
-def initFalcon(index):
-	if index < 0 or index >= len(autoFalcon):
-		return False
-	return autoFalcon[index].initEvent()
-
-def exitFalcon(index):
-	if index < 0 or index >= len(autoFalcon):
-		return
-	autoFalcon[index].exitEvent()
-
-def loopFalcon(index):
-	if index < 0 or index >= len(autoFalcon):
-		return False
-	return autoFalcon[index].eventLoopOnce()
-
-def initAutoFalcon():
-	#autoFalcon.append(Game((1, 34, 387, 724)))
-	print('Make sure you can read the text in the game!!!')
-	lvl = int(input('Enter your HQ level : '))
-	print('Place the mouse on the top left corner of the window, ')
-	print('then press "Enter" or press "space to enter manualy')
-	while keyboard.is_pressed('enter') == False and keyboard.is_pressed('space') == False:
-		time.sleep(.05)
-		print(str(Mouse.getMousePosition()), end='\r')
-	if keyboard.is_pressed('space') == True:
-		top    = int(input('Top of window : '))
-		left   = int(input('Left of window : '))
-		bottom = int(input('Bottom of window : '))
-		right  = int(input('Right of window : '))
-		box = (top, left, bottom, right)
-	else:
-		top_left = Mouse.getMousePosition()
-		while keyboard.is_pressed('enter') == True:
-			time.sleep(.1)
-		print('Place the mouse on the bottom right corner of the window, ')
-		print('then press "Enter"')
-		while keyboard.is_pressed('enter') == False:
-			time.sleep(.05)
-			print(str(Mouse.getMousePosition()), end='\r')
-		bottom_right = Mouse.getMousePosition()
-		box = Screen.makeBox(top_left, bottom_right)
-	print('The game HQ is ' + str(lvl) + ' at location : ' + str(box))
-	print('Accept (y), Exit (n), Retry (r)?')
-	while keyboard.is_pressed('y') == False and keyboard.is_pressed('n') == False and keyboard.is_pressed('r') == False:
-		time.sleep(.05)
-	if keyboard.is_pressed('y'):
-		autoFalcon.append(Game(lvl, box))
-	elif keyboard.is_pressed('n'):
-		on_shortcutKill()
-	elif keyboard.is_pressed('r'):
-		print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-		initAutoFalcon()
+def initShortcuts(pauseSeq, exitSeq, killSeq):
+	print(Fore.YELLOW + 'To pause the app use "' + Fore.WHITE + pauseSeq + Fore.YELLOW + '" key sequence')
+	print(Fore.YELLOW + 'To exit  the app use "' + Fore.WHITE + exitSeq + Fore.YELLOW + '" key sequence')
+	print(Fore.YELLOW + 'To kill  the app use "' + Fore.WHITE + killSeq + Fore.YELLOW + '" key sequence')
+	keyboard.add_hotkey(pauseSeq, on_shortcutPause)
+	keyboard.add_hotkey(exitSeq, on_shortcutExit)
+	keyboard.add_hotkey(killSeq, on_shortcutKill)
 
 def main():
-	initKillSequence('ctrl+alt+esc')
-	initAutoFalcon()
+	#colorama will reset default setting after each print call
+	colorama.init(autoreset = True)
+	initShortcuts('ctrl+alt+p', 'ctrl+alt+x', 'ctrl+alt+esc')
+	games  = []
 	
-	if initFalcon(0) == False:
-		#print('init done with no event available')
-		exitFalcon(0)
-	else:
-		running = True
-		#print('init done with event available')
-		while running == True:
+	#setup instances
+	while True:
+		games.append(Game())
+		cont = input('Would you like to add more instances (y/n)?')
+		if cont != 'y' or g_exitRequest == True:
+			break
+	
+	#if exit was requested will setup, just exit
+	if g_exitRequest == False:
+		for game in reversed(games):
+			if g_exitRequest == False:
+				#call init function on all instances
+				enabled = game.init()
+			#if init error or exit requested, clean exit
+			if enabled == False or g_exitRequest == True:
+				game.exit()
+				games.remove(game)
+				enabled = len(games) > 0
+		
+		#will be True as long as there is instances actives
+		while enabled:
+			#run in referse order because we might remove items from it
+			for game in reversed(games):
+				if g_pauseRequest == True:
+					print(Fore.GREEN + 'Bot paused')
+					#wait until pause is removed or exit requested
+					while g_pauseRequest == True and g_exitRequest == False:
+						time.sleep(5)
+				#execute instances loop once only if not exiting
+				if g_exitRequest == False:
+					enabled = game.loop()
+				#if instance loop return false, we need to exit this instance
+				if enabled == False or g_exitRequest == True:
+					game.exit()
+					games.remove(game)
+					enabled = len(games) > 0
+			#don't overload CPU, wait a little
 			time.sleep(5)
-			running = loopFalcon(0)
-			#print('loop done result : ' + str(running))
-
-		#print('event done, leaving')
-		exitFalcon(0)
+	
+	#need to deinit colorama to restore console normal mode
+	colorama.deinit()
 
 if __name__ == '__main__':
 	main()

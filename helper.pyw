@@ -23,75 +23,23 @@
 # OTHER DEALINGS IN THE SOFTWARE.                                 #
 ###################################################################
 
-import os, time
+import os, time, easyocr, re
 import win32api, win32con
 from PIL import Image, ImageGrab
-import easyocr
 from numpy import *
-import re
+import pygetwindow as pgw
+import ctypes
+from ctypes import wintypes # We can't use ctypes.wintypes, we must import wintypes this way.
 
 #creater easyocr reader database, called only once
 reader = easyocr.Reader(['en'], gpu = False,
                         model_storage_directory =
                         '\\assets\\easyOCR\\')
 
-# Coords are 0..1, so it scale to window size
-class Coords:
-	#inGame Position
-	event_button        = (.917098, .228986)
-	event_return        = (.064767, .092754)
-	event_menu_left     = (.199482, .092754)
-	event_menu_right    = (.898964, .092754)
-	event_list_top      = (.007772, .217391)
-	event_list_bottom   = (.971503, .95942 )
-	event_slide_top     = (.30829,  .243478)
-	event_slide_bottom  = (.30829,  .93913 )
-	event_popup_go      = (.5,      .717391)
-	event_popup_t_l     = (.463731, .707246)
-	event_popup_b_r     = (.546632, .730435)
-	go_button           = (.5,      .915942)
-	go_top_left         = (.445596, .894203)
-	go_bottom_right     = (.554404, .930435)
-	scan_button         = (.341969, .915942)
-	targetA_button      = (.098446, .72029 )
-	targetB_button      = (.411917, .72029 )
-	targetC_button      = (.727979, .72029 )
-	targetD_button      = (.098446, .781159)
-	targetE_button      = (.411917, .781159)
-	targetF_button      = (.727979, .781159)
-	rescue_button       = (.5,      .371014)
-	deploy_button       = (.401554, .905797)
-	deploy_top_left     = (.354922, .849275)
-	deploy_bottom_right = (.453368, .866667)
-
-# Colors are (R, G, B)
-class Colors:
-	scan_button_off   = (133, 116,  89)
-	scan_button_on    = (220, 194, 139)
-	target_button_off = (73,  100,  69)
-	target_button_on  = (65,  247,  91)
-	background        = (113, 108,  93)
-	falcon_event_1    = (210, 106,  28)
-	falcon_event_2    = (193, 135,  11)
-	falcon_event_3    = ( 32,  98, 142)
-	falcon_event_4    = ( 65,  99,  65)
-	falcon_event_5    = (109,  63, 134)
-	
-	def isOn(test, off, on):
-		#print('    requested color test' + str(test) + ' vs off' + str(off) + ' and on' + str(on))
-		eucOff = pow(test[0] - off[0], 2) + pow(test[1] - off[1], 2) + pow(test[2] - off[2], 2)
-		eucOn  = pow(test[0] - on[0],  2) + pow(test[1] - on[1],  2) + pow(test[2] -  on[2], 2)
-		
-		#print('    euclidian distance from off is : ' + str(eucOff))
-		#print('    euclidian distance from on  is : ' + str(eucOn))
-		#print('    test color is probably : ' + str(eucOn < eucOff))
-		
-		if eucOn < eucOff:
-			return True
-		else:
-			return False
-
 class Screen:
+	def resolution():
+		return (ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1))
+	
 	def saveImage(im, name):
 		#print('    requesting image save with name : ' + name)
 		im.save(os.getcwd() + '\\' + name + '_' + str(int(time.time())) + '.png', 'PNG')
@@ -244,3 +192,70 @@ class Vision:
 		except:#time not recognized correctly
 			#print('    error : ' + textList[0] + ' or ' + textList[1] + ' is not in the right format')
 			return 180
+
+class AppWindow:
+	def getGameWindow(name):
+		wt = pgw.getWindowsWithTitle(name)
+		if len(wt) < 1:
+			print('Error : no window')
+			return None
+		print('Got window : ' + str(wt))
+		return wt
+
+	def grabAppArea(box):
+		print('Grabbing area : ' + str(box))
+		im = ImageGrab.grab(box)
+		print('Image : ' + str(im))
+		return im
+
+	def getCornerText(im, txts):
+		if len(txts) != 2:
+			print('must find exactly 2 words, requested ' + str(len(txts)))
+			return ((0, 0), (0, 0))
+		lst = reader.readtext(array(im))
+		print('found ' + str(len(lst)) + ' texts')
+		imp = []
+		for x in lst:
+			if len(re.findall('(' + txts[0] + ')|(' + txts[1] + ')', x[1].lower())) != 0:
+				imp.append(x)
+		if len(imp) != 2:
+			print('Error : didn\'t found exacly 2 match')
+			return ((0, 0), (0, 0))
+		print('Found 2 match : ' + str(imp))
+		def findCenter(item):
+			return ((item[0][0][0] + item[0][2][0]) / 2, 
+					(item[0][0][1] + item[0][2][1]) / 2)
+		if len(re.findall(txts[0], imp[0][1].lower())) != 0:
+			a = findCenter(imp[0])
+			b = findCenter(imp[1])
+		else:
+			b = findCenter(imp[1])
+			a = findCenter(imp[0])
+		print('found ' + txts[0] + ' at ' + str(a))
+		print('found ' + txts[1] + ' at ' + str(b))
+		return (a, b)
+
+	def extrapolateGameArea(ct, const):
+		p1 = ct[0]
+		p2 = ct[1]
+		c1 = const[0]
+		c2 = const[1]
+		#vip  = Coords.static_window_anchor_vip
+		#camp = Coords.static_window_anchor_camp
+		w = round(abs(p1[0] - p2[0]) / abs(c1[0] - c2[0]), 0)
+		h = round(abs(p1[1] - p2[1]) / abs(c1[1] - c2[1]), 0)
+		x = round(p1[0] - c1[0] * w, 0)
+		y = round(p1[1] - c1[1] * h, 0)
+		print('window W : ' + str(w))
+		print('window H : ' + str(h))
+		return (x, y, x + w, y + h)
+
+	def isInside(w, xy):
+		(l, t, r, b) = (w.left, w.top, w.right, w.bottom)
+		(x, y) = xy
+		if x >= l and x <= r and y >= t and y <= b:
+			ret = True
+		else:
+			ret = False
+		print('is ' + str(xy) + ' inside ' + str((l, t, r, b)) + '? ' + str(ret))
+		return ret
