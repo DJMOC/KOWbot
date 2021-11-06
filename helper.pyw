@@ -211,7 +211,7 @@ class AppWindow:
 	def getCornerText(im, txts):
 		if len(txts) != 2:
 			print('must find exactly 2 words, requested ' + str(len(txts)))
-			return ((0, 0), (0, 0))
+			return []
 		lst = reader.readtext(array(im))
 		print('found ' + str(len(lst)) + ' texts')
 		imp = []
@@ -220,7 +220,7 @@ class AppWindow:
 				imp.append(x)
 		if len(imp) != 2:
 			print('Error : didn\'t found exacly 2 match')
-			return ((0, 0), (0, 0))
+			return []
 		print('Found 2 match : ' + str(imp))
 		def findCenter(item):
 			return ((item[0][0][0] + item[0][2][0]) / 2, 
