@@ -62,7 +62,7 @@ def initShortcuts(pauseSeq, exitSeq, killSeq):
 def main():
 	#colorama will reset default setting after each print call
 	colorama.init(autoreset = True)
-	initShortcuts('ctrl+alt+p', 'ctrl+alt+e', 'ctrl+alt+esc')
+	initShortcuts('ctrl+alt+p', 'ctrl+alt+x', 'ctrl+alt+esc')
 	games  = []
 	
 	#setup instances

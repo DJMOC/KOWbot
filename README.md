@@ -2,6 +2,8 @@
 
 KOWbot is currently in beta testing. Please report problems when found!
 Working : 
+* user select game window from BlueStacks instances
+* automaticaly find play area and scaling
 * scaling to any window size
 * automaticaly find it Operation Falcon event is available
 * automaticaly run Operation Falcon until there is no Fuel
@@ -9,23 +11,18 @@ Working :
 * return to Home/World screen when done
 
 # Install #
-* Python 3.7              (tested with 3.7.4)
+* Python 3.7 (https://www.python.org/downloads/release/python-370/)
+* please, use a virtual environment (https://mothergeo-py.readthedocs.io/en/latest/development/how-to/venv-win.html)
 * pip install -r requirements.txt
 
 # How to #
 
-When everything is installed, clone the project to a folder in your
-computer and open "app.py". You will be guided thru the setup 
-required for the bot. To work correctly your window need to be large
-enough to clearly read the text displayed. You will be asked to 
-enter the HQ level of this instance, then you need to specify where
-in the desktop the game is. You have 2 choices, 1 you move the
-mouse over the top left corner, press enter, then move the mouse
-over the bottom right corner and press enter. Choice 2 is available
-if you press space, you can manualy enter the window location. You
-need to enter the position in this order : top edge, left edge, 
-bottom edge and right edge. After the window is set you will be 
-asked if everything is good. You have 3 options : press Y to start
-the bot, press N to close the bot, press R to restart the setup
-process. Because the bot take controle over the mouse, at any time
-you can press ctrl+alt+esc to kill the bot.
+Open file app.py to run the bot.
+Select the appropriate window with the arrows left and right. 
+Once you found it press enter. You will be ask to enter your HQ level.
+Answer 'y' to add more instance or 'n' to execute the current setup.
+No other configuration is needed. 
+At any time you can press 
+	'ctrl+alt+p' to pause the bot
+	'ctrl+alt+x' to exit after the current task
+	'ctrl+alt+esc' to exit now

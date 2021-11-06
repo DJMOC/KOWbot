@@ -47,14 +47,14 @@ def findWindow():
 		print(s, end = '\r')
 		lst[i].minimize()
 		lst[i].restore()
+		while keyboard.is_pressed('left') == True or keyboard.is_pressed('right') == True:
+			time.sleep(.04)
 		while keyboard.is_pressed('enter') == False and keyboard.is_pressed('left')  == False and keyboard.is_pressed('right') == False:
 			time.sleep(.04)
 		if keyboard.is_pressed('left') == True:
 			i = (i - 1) % len(lst)
 		if keyboard.is_pressed('right') == True:
 			i = (i + 1) % len(lst)
-		while keyboard.is_pressed('left') or keyboard.is_pressed('right'):
-			time.sleep(.04)
 	return lst[i]
 
 class Game:
@@ -86,7 +86,7 @@ class Game:
 		window_box = AppWindow.extrapolateGameArea(ct, (Coords.static_window_anchor_vip, Coords.static_window_anchor_camp))
 		hq_level = 0
 		while hq_level == 0:
-			hq_level = input(Fore.MAGENTA + 'Enter the HQ level (1-25): ')
+			hq_level = input('Enter the HQ level (1-25): ')
 			try:
 				hq_level = int(hq_level)
 				if hq_level < 1 or hq_level > 25:
