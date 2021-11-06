@@ -19,10 +19,11 @@ Working :
 
 Open file app.py to run the bot.<br>
 Select the appropriate window with the arrows left and right. <br>
-Once you found it press enter. You will be ask to enter your HQ level.<br>
-Answer 'y' to add more instance or 'n' to execute the current setup.<br>
+Once you found it, press enter. You will be ask to enter your HQ level.<br>
+Then, answer 'y' to add more instance or 'n' to execute the current setup.<br>
 No other configuration is needed. <br>
 At any time you can press <br>
 	'ctrl+alt+p' to pause the bot<br>
 	'ctrl+alt+x' to exit after the current task<br>
 	'ctrl+alt+esc' to exit now<br>
+
