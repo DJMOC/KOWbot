@@ -25,7 +25,7 @@
 
 import os, time, easyocr, re
 import win32api, win32con
-from PIL import Image, ImageGrab
+from PIL import Image, ImageGrab, ImageOps
 from numpy import *
 import pygetwindow as pgw
 import ctypes
@@ -152,6 +152,28 @@ class Vision:
 		#print('    get pixel color at ' + str(xy) + ' : ' + str(im.getpixel(xy)))
 		return im.getpixel(xy)
 	
+	def comapreImages(im1, im2):
+		def fThresold(i):
+			if a > 240:
+				return 255
+			return 0
+		def add2image(im1, im2):
+			if im1.width != im2.width or im1.height != im2.height:
+				return 0
+			ret = Image.new('RGB', im1.size)
+			for y in range(im1.height):
+				for x in range(im1.width):
+					px1 = im1.getpixel((x, y))
+					px2 = im2.getpixel((x, y))
+					r = min(max(px1[0] + px2[0], 0), 255)
+					g = min(max(px1[1] + px2[1], 0), 255)
+					b = min(max(px1[2] + px2[2], 0), 255)
+					ret.putpixel((x, y), (r, b, g))
+			return ret
+		if im1.width != im2.width:
+			im2 = ImageOps.rescale(im2, im1.width / im2.width)
+		
+	
 	def extractStrings(box):
 		im = ImageGrab.grab(box)
 		ret = reader.readtext(array(im))
@@ -192,6 +214,42 @@ class Vision:
 		except:#time not recognized correctly
 			#print('    error : ' + textList[0] + ' or ' + textList[1] + ' is not in the right format')
 			return 180
+
+#Adding image recognition from saved references
+#	def diffImageWithMask(im1, im2, mask):
+#		if im1.width != im2.width or im1.height != im2.height or im1.width != mask.width or im1.height != mask.height:
+#			return 0
+#		ret = Image.new('RGB', im1.size)
+#		for y in range(im1.height):
+#			for x in range(im1.width):
+#				px1 = im1.getpixel((x, y))
+#				px2 = im2.getpixel((x, y))
+#				pxm = mask.getpixel((x, y))
+#				r = min(max(abs(px1[0] - px2[0]) * pxm, 0), 255)
+#				g = min(max(abs(px1[1] - px2[1]) * pxm, 0), 255)
+#				b = min(max(abs(px1[2] - px2[2]) * pxm, 0), 255)
+#				ret.putpixel((x, y), (r, b, g))
+#		return ret
+#	
+#	def getMax(im, threshold):
+#		r = []
+#		for x in range(im.height):
+#			c = im.crop((0, x, 4, x+1)).getcolors()
+#			b = 0
+#			for a in c:
+#				b = (b | 1) if (a[1][0] > threshold) else b
+#				b = (b | 1) if (a[1][1] > threshold) else b
+#				b = (b | 1) if (a[1][2] > threshold) else b
+#			r.append(b)
+#		return (sum(r), len(r))
+#	
+#	def isSame(im, threshold):
+#		r = getMax(im, threshold)
+#		if r[0] > r[1]/3:
+#			return True
+#		return False
+#	
+#	isSame(diffImageWithMask(im_world, im_world2, im_mask).crop((28, 0, 32, 60)), 32)
 
 class AppWindow:
 	def getGameWindow(name):
